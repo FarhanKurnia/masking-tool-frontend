@@ -22,11 +22,12 @@ export default function ColumnMaskingTable({ columns, maskingTypes, onChange }) 
 
             <td style={{ border: "1px solid #ccc", padding: "8px" }}>
               <select
+                value={col.maskType || ""}
                 onChange={(e) =>
                   onChange(col.column_name, e.target.value)
                 }
               >
-                <option value="">Select</option>
+                <option value="">No mask</option>
 
                 {maskingTypes.map((m) => (
                   <option key={m.id} value={m.id}>

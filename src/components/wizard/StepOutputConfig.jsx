@@ -9,11 +9,11 @@ function StepOutputConfig({ jobConfig, setJobConfig }) {
     });
   };
 
-  const handleStagingDBChange = (field, value) => {
+  const handleTargetDBChange = (field, value) => {
     setJobConfig({
       ...jobConfig,
-      stagingDB: {
-        ...jobConfig.stagingDB,
+      targetDB: {
+        ...jobConfig.targetDB,
         [field]: value
       }
     });
@@ -34,20 +34,20 @@ function StepOutputConfig({ jobConfig, setJobConfig }) {
         />
 
         <FormControlLabel
-          value="staging"
+          value="target"
           control={<Radio />}
-          label="Insert to Staging DB"
+          label="Insert to Target DB"
         />
       </RadioGroup>
 
-      {jobConfig.output === "staging" && (
+      {jobConfig.output === "target" && (
         <Box sx={{ mt: 2 }}>
-          <h4>Staging Database Credentials</h4>
+          <h4>Target Database Credentials</h4>
           <TextField
             select
             label="DB Type"
-            value={jobConfig.stagingDB.type || "mysql"}
-            onChange={(e) => handleStagingDBChange("type", e.target.value)}
+            value={jobConfig.targetDB.type || "mysql"}
+            onChange={(e) => handleTargetDBChange("type", e.target.value)}
             fullWidth
             margin="normal"
           >
@@ -56,44 +56,44 @@ function StepOutputConfig({ jobConfig, setJobConfig }) {
           </TextField>
           <TextField
             label="Host"
-            value={jobConfig.stagingDB.host || ""}
-            onChange={(e) => handleStagingDBChange("host", e.target.value)}
+            value={jobConfig.targetDB.host || ""}
+            onChange={(e) => handleTargetDBChange("host", e.target.value)}
             fullWidth
             margin="normal"
           />
           <TextField
             label="Port"
-            value={jobConfig.stagingDB.port || ""}
-            onChange={(e) => handleStagingDBChange("port", e.target.value)}
+            value={jobConfig.targetDB.port || ""}
+            onChange={(e) => handleTargetDBChange("port", e.target.value)}
             fullWidth
             margin="normal"
           />
           <TextField
             label="User"
-            value={jobConfig.stagingDB.user || ""}
-            onChange={(e) => handleStagingDBChange("user", e.target.value)}
+            value={jobConfig.targetDB.user || ""}
+            onChange={(e) => handleTargetDBChange("user", e.target.value)}
             fullWidth
             margin="normal"
           />
           <TextField
             label="Password"
             type="password"
-            value={jobConfig.stagingDB.password || ""}
-            onChange={(e) => handleStagingDBChange("password", e.target.value)}
+            value={jobConfig.targetDB.password || ""}
+            onChange={(e) => handleTargetDBChange("password", e.target.value)}
             fullWidth
             margin="normal"
           />
           <TextField
             label="Database"
-            value={jobConfig.stagingDB.database || ""}
-            onChange={(e) => handleStagingDBChange("database", e.target.value)}
+            value={jobConfig.targetDB.database || ""}
+            onChange={(e) => handleTargetDBChange("database", e.target.value)}
             fullWidth
             margin="normal"
           />
           <TextField
             label="Table Name"
-            value={jobConfig.stagingDB.table || ""}
-            onChange={(e) => handleStagingDBChange("table", e.target.value)}
+            value={jobConfig.targetDB.table || ""}
+            onChange={(e) => handleTargetDBChange("table", e.target.value)}
             fullWidth
             margin="normal"
             helperText="Leave empty to use source table name"

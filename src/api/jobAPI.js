@@ -17,7 +17,7 @@ export async function getJobLogs(id) {
 }
 
 export async function createJob(payload) {
-  // payload should include name, sourceDB, table, output
+  // payload should include name, sourceDB, table, output, and optionally targetDB for database outputs
   return apiClient.post("/jobs", payload);
 }
 
@@ -26,8 +26,9 @@ export async function saveMaskingRules(jobId, rulesPayload) {
   return apiClient.post(`/jobs/${jobId}/masking-rules`, rulesPayload);
 }
 
-export async function runJob(jobId) {
-  return apiClient.post(`/jobs/${jobId}/run`);
+export async function runJob(jobId, payload) {
+  // payload may include sourceDB and targetDB connection details
+  return apiClient.post(`/jobs/${jobId}/run`, payload);
 }
 
 export async function getRunStatus(runId) {

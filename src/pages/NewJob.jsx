@@ -34,7 +34,16 @@ function NewJob() {
     const saved = localStorage.getItem("jobConfig");
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const obj = JSON.parse(saved);
+        // migrate stagingDB -> targetDB if present
+        if (obj.stagingDB && !obj.targetDB) {
+          obj.targetDB = obj.stagingDB;
+        }
+        // normalize output field
+        if (obj.output === "staging") {
+          obj.output = "target";
+        }
+        return obj;
       } catch (e) {
         console.error("Failed to parse saved job config:", e);
       }
@@ -44,7 +53,7 @@ function NewJob() {
       table: "",
       columns: [],
       output: "csv",
-      stagingDB: {}
+      targetDB: {}
     };
   });
 
@@ -58,7 +67,7 @@ function NewJob() {
       table: "",
       columns: [],
       output: "csv",
-      stagingDB: {}
+      targetDB: {}
     });
     localStorage.removeItem("jobConfig");
   };
