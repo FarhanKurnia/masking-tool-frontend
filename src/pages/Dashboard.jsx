@@ -102,8 +102,8 @@ export default function Dashboard() {
 
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Table</TableCell>
+              <TableCell>Output</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Total Rows</TableCell>
               <TableCell>Elapsed Time</TableCell>
@@ -121,8 +121,10 @@ export default function Dashboard() {
                   }
                 }}
               >
-                <TableCell>{job.id}</TableCell>
                 <TableCell>{job.table_name}</TableCell>
+                <TableCell>
+                  {job.output_type === "target" ? "table" : job.output_type}
+                </TableCell>
                 <TableCell>{job.status}</TableCell>
                 <TableCell>{job.total_rows}</TableCell>
                 <TableCell>{elapsed[job.id] || "-"}</TableCell>
