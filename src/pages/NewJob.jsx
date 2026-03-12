@@ -7,10 +7,14 @@ import {
   Button,
   Typography,
   Box,
-  Paper
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent
 } from "@mui/material";
 
 import DashboardLayout from "../layout/DashboardLayout";
+import { testConnection } from "../api/dbApi";
 
 import StepConnectDB from "../components/wizard/StepConnectDB";
 import StepSelectTable from "../components/wizard/StepSelectTable";
@@ -29,6 +33,10 @@ const steps = [
 function NewJob() {
 
   const [activeStep, setActiveStep] = useState(0);
+
+  // state for connection failure modal
+  const [connectionError, setConnectionError] = useState("");
+  const [showConnectionError, setShowConnectionError] = useState(false);
 
   const [jobConfig, setJobConfig] = useState(() => {
     const saved = localStorage.getItem("jobConfig");
@@ -70,14 +78,60 @@ function NewJob() {
       targetDB: {}
     });
     localStorage.removeItem("jobConfig");
+    setActiveStep(0);
   };
 
-  const nextStep = () => {
+  const nextStep = async () => {
+    // if we're on the first step, verify the database connection before proceeding
+    if (activeStep === 0) {
+      try {
+        const db = jobConfig.sourceDB || {};
+        await testConnection({
+          ...db,
+          port: parseInt(db.port)
+        });
+      } catch (err) {
+        console.error("connection test failed", err);
+        setConnectionError(err.response?.data?.error || err.message || "Failed to connect");
+        setShowConnectionError(true);
+        return;
+      }
+    }
+
     setActiveStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
     setActiveStep((prev) => prev - 1);
+  };
+
+  // determine whether the "Next" button should be disabled based on current step inputs
+  const shouldDisableNext = () => {
+    switch (activeStep) {
+      case 0: {
+        const db = jobConfig.sourceDB || {};
+        // require basic connection details before moving on
+        return !(
+          db.host &&
+          db.user &&
+          db.database
+        );
+      }
+      case 1:
+        return !jobConfig.table;
+      case 2:
+        // masking step has no mandatory fields; allow progression
+        return false;
+      case 3: {
+        if (jobConfig.output === "target") {
+          const t = jobConfig.targetDB || {};
+          return !(t.host && t.user && t.database);
+        }
+        return false;
+      }
+      default:
+        return true;
+    }
   };
 
   const renderStep = () => {
@@ -188,12 +242,24 @@ function NewJob() {
           <Button
             variant="contained"
             onClick={nextStep}
+            disabled={shouldDisableNext()}
           >
             Next
           </Button>
         )}
 
       </Box>
+
+      {/* connection failure modal */}
+      <Dialog
+        open={showConnectionError}
+        onClose={() => setShowConnectionError(false)}
+      >
+        <DialogTitle>Connection Error</DialogTitle>
+        <DialogContent>
+          <Typography>{connectionError}</Typography>
+        </DialogContent>
+      </Dialog>
 
     </DashboardLayout>
 
